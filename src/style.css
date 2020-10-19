@@ -1,0 +1,10 @@
+ul.colorMatrix {
+  list-style: none;
+}
+
+ul.colorMatrix li {
+  width: 5rem;
+  height: 5rem;
+  display: inline-block;
+  border-radius: 5rem;
+}
