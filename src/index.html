@@ -3,39 +3,47 @@
   <head>
     <meta charset="utf-8"/>
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <h1>Dominant color</h1>
-    <div class="imageInputWrapper">
-      <canvas id="canvas"></canvas>
-      <div class="output">
-        <img id="photo" alt="The screen cap will output here" />
+    <div class='output-wrapper'>
+      <h2 class="title">node-vibrant output</h2>
+      <div class="image-wrapper">
+        <img id="sourceImgVibrant" class="sourceImg" src="" />
+        <ul class="colorMatrix">
+          <li id="DarkVibrantItem" class="item"></li>
+          <li id="VibrantItem" class="item"></li>
+          <li id="LightVibrantItem" class="item"></li>
+          <li id="DarkMutedItem" class="item"></li>
+          <li id="MutedItem" class="item"></li>
+          <li id="LightMutedItem" class="item"></li>
+        </ul>
       </div>
-      <img id="sourceImg" src="" />
+      <div class="content-wrapper">
+        <div id="pickerVibrant" class="colorPicker"></div>
+      </div>
     </div>
-    <h2>node-vibrant output</h2>
-    <ul class="colorMatrix">
-      <li id="dVibrant" class="item"></li>
-      <li id="vibrant" class="item"></li>
-      <li id="lVibrant" class="item"></li>
-      <li id="dMuted" class="item"></li>
-      <li id="muted" class="item"></li>
-      <li id="lMuted" class="item"></li>
-    </ul>
-    <div id="pickerVibrant"></div>
 
-    <h2>Color Thief output</h2>
-    <ul class="colorMatrix">
-      <li id="domanantCT" class="item"></li>
-    </ul>
-    <ul class="colorMatrix">
-      <li id="CT1" class="item"></li>
-      <li id="CT2" class="item"></li>
-      <li id="CT3" class="item"></li>
-      <li id="CT4" class="item"></li>
-      <li id="CT5" class="item"></li>
-      <li id="CT6" class="item"></li>
-    </ul>
-    <div id="pickerCT"></div>
+    <div class='output-wrapper'>
+      <h2 class="title">Color Thief output</h2>
+      <div class="image-wrapper">
+        <img id="sourceImgCT" class="sourceImg" src="" />
+        <ul class="colorMatrix domanantSingle">
+          <li id="domanantCT" class="item"></li>
+        </ul>
+        <ul class="colorMatrix">
+          <li id="CT1" class="item"></li>
+          <li id="CT2" class="item"></li>
+          <li id="CT3" class="item"></li>
+          <li id="CT4" class="item"></li>
+          <li id="CT5" class="item"></li>
+          <li id="CT6" class="item"></li>
+        </ul>
+      </div>
+      <div class="content-wrapper">
+        <div id="pickerCT" class="colorPicker"></div>
+      </div>
+    </div>
   </body>
 </html>

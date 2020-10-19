@@ -1,10 +1,61 @@
+body {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+.output-wrapper {
+  max-width: 49%;
+  display:inline-block;
+  vertical-align: top;
+}
+
+h2.title { margin-bottom: 4rem; }
+
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 640px;
+}
+
+.sourceImg {
+  width: 100%;
+}
+
 ul.colorMatrix {
   list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  position: absolute;
+  top: -2rem;
+  width: 100%;
+  text-align: center;
+}
+
+ul.domanantSingle {
+  top: initial;
+  bottom: -4rem;
+  right: -4rem;
+  text-align: right;
 }
 
 ul.colorMatrix li {
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
   display: inline-block;
-  border-radius: 5rem;
+  border-radius: 4rem;
+  margin: 0 0.25rem;
+  border: 0.125rem solid #FFF;
+}
+
+ul.domanantSingle li {
+  width: 8rem;
+  height: 8rem;
+}
+
+.content-wrapper {
+  margin: 2rem;
+  text-align: center;
+}
+
+.colorPicker {
+  display: inline-block;
 }
