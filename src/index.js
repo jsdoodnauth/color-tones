@@ -78,4 +78,71 @@ function processImageWithVibrant(sourceImg) {
   });
 }
 
+
+var videoWidth = 320;
+var videoHeight = 0;
+
+var streaming = false;
+
+var video = null;
+var canvas = null;
+var photo = null;
+
+function videoInit() {
+  video = document.getElementById('video');
+  canvas = document.getElementById('canvas');
+  photo = document.getElementById('photo');
+
+  navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((stream) => {
+    video.srcObject = stream;
+    video.play();
+  }).catch((err) => {
+    console.log("An error occurred: " + err);
+  });
+
+  video.addEventListener('canplay', (evt) => {
+    if (!streaming) {
+      height = video.videoHeight / (video.videoWidth/videoWidth);
+
+      video.setAttribute('width', videoWidth);
+      video.setAttribute('height', videoHeight);
+      canvas.setAttribute('width', videoWidth);
+      canvas.setAttribute('width', videoHeight);
+      streaming = true;
+    }
+  }, false);
+
+  setInterval(() => {
+    takePicture();
+  }, 750);
+
+  clearPhoto();
+}
+
+function clearPhoto() {
+  var context = canvas.getContext('2d');
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  var data = canvas.toDataURL('image/png');
+  photo.setAttribute('src', data);
+}
+
+function takePicture() {
+  var context = canvas.getContext('2d');
+  if (videoWidth && videoHeight) {
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+    context.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+    var data = canvas.toDataURL('image/png');
+    photo.setAttribute('src', data);
+    processImageWithColorThief(photo);
+    processImageWithVibrant(photo);
+  } else {
+    clearPhoto();
+  }
+}
+
 document.body.addEventListener('load', init());
+// document.body.addEventListener('load', videoInit());
