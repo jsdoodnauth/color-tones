@@ -102,7 +102,7 @@ function videoInit() {
 
   video.addEventListener('canplay', (evt) => {
     if (!streaming) {
-      height = video.videoHeight / (video.videoWidth/videoWidth);
+      videoHeight = video.videoHeight / (video.videoWidth/videoWidth);
 
       video.setAttribute('width', videoWidth);
       video.setAttribute('height', videoHeight);
