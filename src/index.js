@@ -5,6 +5,9 @@ import Vibrant from 'node-vibrant/dist/vibrant';
 import image from './4.jpg';
 import iro from '@jaames/iro';
 
+var pickerCT = initColorWheel('#pickerCT');
+var pickerVibrant = initColorWheel('#pickerVibrant');
+
 function init() {
   const sourceImgCT = document.getElementById('sourceImgCT');
   const sourceImgVibrant = document.getElementById('sourceImgVibrant');
@@ -14,7 +17,7 @@ function init() {
   processImageWithVibrant(sourceImgVibrant);
 }
 
-function configureColorWheel(picker, colorArray) {
+function initColorWheel(picker) {
   var colorPicker = new iro.ColorPicker(picker, {
     width: 320,
     layout: [
@@ -23,15 +26,38 @@ function configureColorWheel(picker, colorArray) {
         options: {
           borderColor: '#FFFFFF'
         }
+      },
+      { 
+        component: iro.ui.Slider,
+        options: {
+          sliderType: 'hue'
+        }
+      },
+      { 
+        component: iro.ui.Slider,
+        options: {
+          sliderType: 'saturation'
+        }
+      },
+      { 
+        component: iro.ui.Slider,
+        options: {
+          sliderType: 'value'
+        }
+      },
+      { 
+        component: iro.ui.Slider,
+        options: {
+          sliderType: 'kelvin'
+        }
       }
     ]
   });
+  return colorPicker;
+}
 
-  colorArray.forEach(color => {
-    colorPicker.addColor(color);    
-  });
-
-  colorPicker.removeColor(0);
+function updateColorWheel(picker, colorArray) {
+  picker.setColors(colorArray);
 }
 
 function processImageWithColorThief(sourceImg) {
@@ -52,7 +78,7 @@ function processImageWithColorThief(sourceImg) {
         document.getElementById('CT' + (i + 1)).style.backgroundColor = 'rgb(' + hexColorPalette[0] + ',' + hexColorPalette[1] + ',' + hexColorPalette[2] + ')';
         colorPaletteStr.push('rgb(' + hexColorPalette[0] + ',' + hexColorPalette[1] + ',' + hexColorPalette[2] + ')');          
       }
-      configureColorWheel('#pickerCT', colorPaletteStr);
+      updateColorWheel(pickerCT, colorPaletteStr);
     });
   }
 }
@@ -73,7 +99,7 @@ function processImageWithVibrant(sourceImg) {
           colorPaletteStr.push('rgb(' + colorPalette._rgb[0] + ',' + colorPalette._rgb[1] + ',' + colorPalette._rgb[2] + ')');
         }
       });
-      configureColorWheel('#pickerVibrant', colorPaletteStr);
+      updateColorWheel(pickerVibrant, colorPaletteStr);
     });
   });
 }
@@ -102,7 +128,7 @@ function videoInit() {
 
   video.addEventListener('canplay', (evt) => {
     if (!streaming) {
-      height = video.videoHeight / (video.videoWidth/videoWidth);
+      videoHeight = video.videoHeight / (video.videoWidth/videoWidth);
 
       video.setAttribute('width', videoWidth);
       video.setAttribute('height', videoHeight);
@@ -144,5 +170,5 @@ function takePicture() {
   }
 }
 
-document.body.addEventListener('load', init());
-// document.body.addEventListener('load', videoInit());
+// document.body.addEventListener('load', init());
+document.body.addEventListener('load', videoInit());
