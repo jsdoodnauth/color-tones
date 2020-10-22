@@ -7,52 +7,67 @@
   </head>
   <body>
     <h1>Dominant color</h1>
-    <div class="video-wrapper">
-      <div class="camera">
-        <video id="video">Video stream not available</video>
-      </div>
-      <canvas id="canvas"></canvas>
-      <div class="image-output">
-        <img id="photo" alt="The screen capture will appear here" />
+    
+    <div class="content-wrapper">
+      <div class="switch-field">
+        <input type="radio" id="scanType1" name="scanType" value="0" checked /><label for="scanType1">Vibrant</label>
+        <input type="radio" id="scanType2" name="scanType" value="1" /><label for="scanType2">Dominant</label>
       </div>
     </div>
-    <div class='output-wrapper'>
-      <h2 class="title">node-vibrant output</h2>
-      <div class="image-wrapper">
-        <img id="sourceImgVibrant" class="sourceImg" src="" />
-        <ul class="colorMatrix">
-          <li id="DarkVibrantItem" class="item"></li>
-          <li id="VibrantItem" class="item"></li>
-          <li id="LightVibrantItem" class="item"></li>
-          <li id="DarkMutedItem" class="item"></li>
-          <li id="MutedItem" class="item"></li>
-          <li id="LightMutedItem" class="item"></li>
-        </ul>
+    <div class="display-cover">
+      <video id="video" autoplay>Video stream not available</video>
+      <canvas id="canvas" class="d-none"></canvas>
+      
+      <img id="sourceImgVibrant" class="sourceImg vibrant-output" src="" />
+      <img id="sourceImgCT" class="sourceImg ct-output" src="" />
+  
+      <div class="video-options">
+          <select name="" id="" class="custom-select">
+              <option value="">Select camera</option>
+          </select>
       </div>
-      <div class="content-wrapper">
-        <div id="pickerVibrant" class="colorPicker"></div>
+  
+      <img id="photo" alt="The screen capture will appear here" class="screenshot-image d-none">
+  
+      <div class="controls">
+          <button class="btn btn-danger play" title="Play"><i data-feather="play-circle"></i></button>
+          <button class="btn btn-info pause d-none" title="Pause"><i data-feather="pause"></i></button>
+          <button class="btn btn-outline-success screenshot d-none" title="ScreenShot"><i data-feather="image"></i></button>
       </div>
-    </div>
+      <div class='output-wrapper vibrant-output'>
+        <h2 class="title">node-vibrant output</h2>
+        <div class="image-wrapper">
+          <ul class="colorMatrix">
+            <li id="DarkVibrantItem" class="item"></li>
+            <li id="VibrantItem" class="item"></li>
+            <li id="LightVibrantItem" class="item"></li>
+            <li id="DarkMutedItem" class="item"></li>
+            <li id="MutedItem" class="item"></li>
+            <li id="LightMutedItem" class="item"></li>
+          </ul>
+        </div>
+      </div>
 
-    <div class='output-wrapper'>
-      <h2 class="title">Color Thief output</h2>
-      <div class="image-wrapper">
-        <img id="sourceImgCT" class="sourceImg" src="" />
-        <ul class="colorMatrix domanantSingle">
-          <li id="domanantCT" class="item"></li>
-        </ul>
-        <ul class="colorMatrix">
-          <li id="CT1" class="item"></li>
-          <li id="CT2" class="item"></li>
-          <li id="CT3" class="item"></li>
-          <li id="CT4" class="item"></li>
-          <li id="CT5" class="item"></li>
-          <li id="CT6" class="item"></li>
-        </ul>
-      </div>
-      <div class="content-wrapper">
-        <div id="pickerCT" class="colorPicker"></div>
-      </div>
+      <div class='output-wrapper ct-output'>
+        <h2 class="title">Color Thief output</h2>
+        <div class="image-wrapper">
+          <ul class="colorMatrix domanantSingle">
+            <li id="domanantCT" class="item"></li>
+          </ul>
+          <ul class="colorMatrix">
+            <li id="CT1" class="item"></li>
+            <li id="CT2" class="item"></li>
+            <li id="CT3" class="item"></li>
+            <li id="CT4" class="item"></li>
+            <li id="CT5" class="item"></li>
+            <li id="CT6" class="item"></li>
+          </ul>
+        </div>
+      </div>      
+    </div>
+    <div class="content-wrapper">
+      <div id="pickerVibrant" class="colorPicker vibrant-output"></div>
+      <div id="pickerCT" class="colorPicker ct-output"></div>
     </div>
   </body>
 </html>

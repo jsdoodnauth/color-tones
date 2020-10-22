@@ -104,71 +104,232 @@ function processImageWithVibrant(sourceImg) {
   });
 }
 
+/****************************************************************************************/
+const controls = document.querySelector('.controls');
+const cameraOptions = document.querySelector('.video-options>select');
+const video = document.querySelector('video');
+const canvas = document.querySelector('canvas');
+const screenshotImage = document.querySelector('img');
+const buttons = [...controls.querySelectorAll('button')];
+let streamStarted = false;
+
+const [play, pause, screenshot] = buttons;
+
+const constraints = {
+  video: {
+    width: {
+      min: 720,
+      ideal: 1080,
+      max: 1440,
+    },
+    height: {
+      min: 720,
+      ideal: 1080,
+      max: 1440
+    },
+  }
+};
+
+const getCameraSelection = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  const videoDevices = devices.filter(device => device.kind === 'videoinput');
+  const options = videoDevices.map(videoDevice => {
+    return `<option value="${videoDevice.deviceId}">${videoDevice.label}</option>`;
+  });
+  cameraOptions.innerHTML = options.join('');
+};
+
+play.onclick = () => {
+  if (streamStarted) {
+    video.play();
+    play.classList.add('d-none');
+    pause.classList.remove('d-none');
+    return;
+  }
+  if ('mediaDevices' in navigator && navigator.mediaDevices.getUserMedia) {
+    const updatedConstraints = {
+      ...constraints,
+      deviceId: {
+        exact: cameraOptions.value
+      }
+    };
+    startStream(updatedConstraints);
+  }
+};
+
+const startStream = async (constraints) => {
+  const stream = await navigator.mediaDevices.getUserMedia(constraints);
+  handleStream(stream);
+};
+
+const handleStream = (stream) => {
+  video.srcObject = stream;
+  play.classList.add('d-none');
+  pause.classList.remove('d-none');
+  screenshot.classList.remove('d-none');
+  streamStarted = true;
+};
+
+cameraOptions.onchange = () => {
+  const updatedConstraints = {
+    ...constraints,
+    deviceId: {
+      exact: cameraOptions.value
+    }
+  };
+  startStream(updatedConstraints);
+};
+
+const pauseStream = () => {
+  video.pause();
+  play.classList.remove('d-none');
+  pause.classList.add('d-none');
+};
+
+const doScreenshot = () => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  screenshotImage.src = canvas.toDataURL('image/webp');
+  screenshotImage.classList.remove('d-none');
+};
+
+pause.onclick = pauseStream;
+screenshot.onclick = doScreenshot;
+
+/***************************************************************************************************************/
 
 var videoWidth = 320;
 var videoHeight = 0;
 
+var defaultScan = 0;
+
 var streaming = false;
 
-var video = null;
-var canvas = null;
+var videoObj = null;
+var canvasObj = null;
 var photo = null;
+const videoConstraints = {
+  facingMode: 'environment',  
+};
+
 
 function videoInit() {
-  video = document.getElementById('video');
-  canvas = document.getElementById('canvas');
+  videoObj = document.getElementById('video');
+  canvasObj = document.getElementById('canvas');
   photo = document.getElementById('photo');
 
-  navigator.mediaDevices.getUserMedia({ video: true, audio: false }).then((stream) => {
-    video.srcObject = stream;
-    video.play();
+  navigator.permissions.query({name: 'camera'})
+  .then((permissionObj) => {
+   console.log(permissionObj.state);
+  })
+  .catch((error) => {
+   console.log('Got error :', error);
+  })
+  
+  navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: false }).then((stream) => {
+    videoObj.srcObject = stream;
+    videoObj.play();
   }).catch((err) => {
     console.log("An error occurred: " + err);
   });
 
-  video.addEventListener('canplay', (evt) => {
+  videoObj.addEventListener('canplay', (evt) => {
     if (!streaming) {
-      videoHeight = video.videoHeight / (video.videoWidth/videoWidth);
+      videoHeight = videoObj.videoHeight / (videoObj.videoWidth/videoWidth);
 
-      video.setAttribute('width', videoWidth);
-      video.setAttribute('height', videoHeight);
-      canvas.setAttribute('width', videoWidth);
-      canvas.setAttribute('width', videoHeight);
+      videoObj.setAttribute('width', videoWidth);
+      videoObj.setAttribute('height', videoHeight);
+      canvasObj.setAttribute('width', videoWidth);
+      canvasObj.setAttribute('height', videoHeight);
       streaming = true;
     }
   }, false);
 
   setInterval(() => {
     takePicture();
-  }, 750);
+  }, 50);
 
   clearPhoto();
 }
 
 function clearPhoto() {
-  var context = canvas.getContext('2d');
+  var context = canvasObj.getContext('2d');
   context.fillStyle = '#000';
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, canvasObj.width, canvasObj.height);
 
-  var data = canvas.toDataURL('image/png');
+  var data = canvasObj.toDataURL('image/png');
   photo.setAttribute('src', data);
 }
 
 function takePicture() {
-  var context = canvas.getContext('2d');
+  var context = canvasObj.getContext('2d');
   if (videoWidth && videoHeight) {
-    canvas.width = videoWidth;
-    canvas.height = videoHeight;
-    context.drawImage(video, 0, 0, videoWidth, videoHeight);
+    canvasObj.width = videoWidth;
+    canvasObj.height = videoHeight;
+    context.drawImage(videoObj, 0, 0, videoWidth, videoHeight);
 
-    var data = canvas.toDataURL('image/png');
+    var data = canvasObj.toDataURL('image/png');
     photo.setAttribute('src', data);
-    processImageWithColorThief(photo);
-    processImageWithVibrant(photo);
+    if (defaultScan == 0) {
+      processImageWithVibrant(photo);
+    } else if (defaultScan == 1) {
+      processImageWithColorThief(photo);
+    }
   } else {
     clearPhoto();
   }
 }
 
+
+const doScreenshotObj = () => {
+  canvasObj.width = videoObj.videoWidth;
+  canvasObj.height = videoObj.videoHeight;
+  canvasObj.getContext('2d').drawImage(videoObj, 0, 0);
+  screenshotImage.src = canvasObj.toDataURL('image/png');
+  screenshotImage.classList.remove('d-none');
+};
+
+screenshot.onclick = doScreenshotObj;
+
+
+const scanTypeRadio1 = document.querySelector('#scanType1');
+const scanTypeRadio2 = document.querySelector('#scanType2');
+scanTypeRadio1.addEventListener("change", updateScanType);
+scanTypeRadio2.addEventListener("change", updateScanType);
+
+
+hide(document.querySelectorAll('.ct-output'));
+show(document.querySelectorAll('.vibrant-output'));
+function updateScanType() {
+  console.log(this.value);
+  defaultScan = this.value;
+  
+  if (defaultScan == 0) {
+    processImageWithVibrant(photo);
+    show(document.querySelectorAll('.vibrant-output'));
+    hide(document.querySelectorAll('.ct-output'));
+  } else if (defaultScan == 1) {
+    processImageWithColorThief(photo);
+    hide(document.querySelectorAll('.vibrant-output'));
+    show(document.querySelectorAll('.ct-output'));
+  }
+  
+}
+
+function hide(list) {
+  for (let i = 0; i < list.length; i++) {
+    list[i].style.display = 'none';    
+  }
+}
+
+
+function show(list) {
+  for (let i = 0; i < list.length; i++) {
+    list[i].style.display = 'inline-block';    
+  }
+}
+
 // document.body.addEventListener('load', init());
 document.body.addEventListener('load', videoInit());
+// document.body.addEventListener('load', getCameraSelection());
